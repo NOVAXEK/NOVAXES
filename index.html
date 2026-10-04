@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NOVAXEC Feature Trading</title>
+  <meta name="description" content="NOVAXEC Feature Trading – Trade crypto futures with leverage. 100 USDT welcome bonus for new users." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ==================== AUTH SCREEN ==================== -->
+  <div id="auth-screen" class="auth-container">
+    <div class="auth-card">
+      <div class="logo">NX</div>
+      <h1 class="text-2xl font-bold text-center" style="margin-bottom:0.25rem;">NOVAXEC Feature Trading</h1>
+      <p class="text-sm text-center" style="color:var(--text-muted);margin-bottom:1rem;">
+        Crypto Feature Trading Platform
+      </p>
+
+      <div class="bonus-banner">
+        🎁 100 USDT New User Welcome Bonus
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-2" style="margin-bottom:1.25rem;">
+        <button id="tab-login" class="btn btn-primary flex-1" onclick="switchAuthTab('login')">Login</button>
+        <button id="tab-register" class="btn btn-secondary flex-1" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="login-email" class="input" placeholder="you@example.com" required />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="login-password" class="input" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top:0.5rem;">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="hidden">
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" class="input" placeholder="Alex Trader" required />
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" class="input" placeholder="you@example.com" required />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" class="input" placeholder="Min. 6 chars · not numbers only" required minlength="6" />
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top:0.5rem;">
+          Create Account & Claim 100 USDT
+        </button>
+        <p class="text-xs text-center" style="color:var(--text-muted);margin-top:1rem;">
+          By registering you agree to the NOVAXEC Feature Trading Terms of Service.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== APP SCREEN ==================== -->
+  <div id="app-screen" class="app-container hidden">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="flex items-center gap-3">
+        <div id="header-avatar" class="user-avatar">A</div>
+        <div>
+          <div id="header-name" class="font-semibold" style="font-size:0.95rem;">User</div>
+          <div class="text-xs" style="color:var(--text-muted);">NOVAXEC</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="handleLogout()" class="btn btn-sm btn-secondary" title="Logout">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- ========== HOME PAGE ========== -->
+    <div id="page-home" class="page active">
+      <!-- Balance Card -->
+      <div class="balance-card" style="margin-bottom:1.1rem;">
+        <div class="flex justify-between items-center" style="margin-bottom:0.4rem;">
+          <span class="text-sm" style="color:var(--text-muted);">AVAILABLE BALANCE</span>
+          <span class="badge badge-green">● Live</span>
+        </div>
+        <div class="flex items-end gap-2">
+          <span id="home-balance" class="text-3xl font-bold">0.00</span>
+          <span class="text-sm" style="color:var(--text-muted);margin-bottom:0.3rem;">USDT</span>
+        </div>
+        <div class="flex justify-between items-center" style="margin-top:0.9rem;">
+          <div class="text-sm" style="color:var(--text-muted);">
+            Equity <strong id="home-equity" style="color:var(--text);">0.00</strong>
+          </div>
+          <div class="text-sm" style="color:var(--text-muted);" id="home-wallet-short">0x...</div>
+        </div>
+      </div>
+
+      <!-- Welcome bonus notice (shown if balance was just credited) -->
+      <div id="welcome-notice" class="card" style="margin-bottom:1.1rem;display:none;border-color:rgba(0,212,170,0.35);">
+        <div class="flex items-center gap-3">
+          <div style="font-size:1.5rem;">🎁</div>
+          <div>
+            <div class="font-semibold" style="color:var(--primary);">Welcome Bonus Credited!</div>
+            <div class="text-sm" style="color:var(--text-muted);">100 USDT has been added to your account.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">Open Positions</div>
+          <div class="stat-value" id="home-positions">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Unrealized PnL</div>
+          <div class="stat-value" id="home-pnl">0.00</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card" style="margin-bottom:1.1rem;">
+        <div class="font-semibold" style="margin-bottom:0.85rem;">Quick Trade</div>
+        <div class="flex gap-2">
+          <button class="btn btn-long flex-1" onclick="switchPage('trade'); setSide('long');">
+            Long
+          </button>
+          <button class="btn btn-short flex-1" onclick="switchPage('trade'); setSide('short');">
+            Short
+          </button>
+        </div>
+      </div>
+
+      <!-- Markets -->
+      <div class="card">
+        <div class="font-semibold" style="margin-bottom:0.75rem;">Markets</div>
+        <div id="home-markets">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TRADE PAGE ========== -->
+    <div id="page-trade" class="page">
+      <!-- Pair Selector -->
+      <div class="pair-selector" id="pair-selector">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Current Price -->
+      <div class="price-ticker">
+        <span class="price-value" id="trade-price">0.00</span>
+        <span class="price-change" id="trade-change">+0.00%</span>
+      </div>
+
+      <!-- Live Chart -->
+      <div class="card chart-card" style="margin-bottom:1.1rem;padding:0.75rem;">
+        <div class="flex justify-between items-center" style="margin-bottom:0.6rem;padding:0 0.15rem;">
+          <div class="font-semibold text-sm">Live Chart</div>
+          <div class="timeframe-row" id="timeframe-row">
+            <button type="button" class="tf-btn" data-tf="1" onclick="setChartTimeframe('1')">1m</button>
+            <button type="button" class="tf-btn" data-tf="5" onclick="setChartTimeframe('5')">5m</button>
+            <button type="button" class="tf-btn" data-tf="15" onclick="setChartTimeframe('15')">15m</button>
+            <button type="button" class="tf-btn active" data-tf="60" onclick="setChartTimeframe('60')">1H</button>
+            <button type="button" class="tf-btn" data-tf="240" onclick="setChartTimeframe('240')">4H</button>
+            <button type="button" class="tf-btn" data-tf="D" onclick="setChartTimeframe('D')">1D</button>
+            <button type="button" class="tf-btn" data-tf="W" onclick="setChartTimeframe('W')">1W</button>
+          </div>
+        </div>
+        <div id="tv-chart-container" class="tv-chart-container">
+          <!-- TradingView widget mounts here -->
+        </div>
+        <p class="text-xs text-center" style="color:var(--text-muted);margin-top:0.5rem;">
+          Real-time chart · Change pair or timeframe above
+        </p>
+      </div>
+
+      <!-- Side Toggle -->
+      <div class="side-toggle">
+        <button class="side-btn long active" id="btn-long" onclick="setSide('long')">Long</button>
+        <button class="side-btn short" id="btn-short" onclick="setSide('short')">Short</button>
+      </div>
+
+      <!-- Order Form -->
+      <div class="card" style="margin-bottom:1.1rem;">
+        <div class="input-group">
+          <label>Size (USDT)</label>
+          <input type="number" id="order-size" class="input" placeholder="10" step="0.01" min="1" value="10" />
+        </div>
+
+        <div class="input-group">
+          <label>Leverage</label>
+          <div class="leverage-row">
+            <input type="range" id="order-leverage" min="1" max="50" value="10" oninput="updateLeverageLabel()" />
+            <span class="leverage-value" id="leverage-label">10x</span>
+          </div>
+        </div>
+
+        <div class="sltp-row">
+          <div class="input-group" style="margin-bottom:0;">
+            <label>Stop Loss (optional)</label>
+            <input type="number" id="order-sl" class="input" placeholder="Price" step="any" />
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>Take Profit (optional)</label>
+            <input type="number" id="order-tp" class="input" placeholder="Price" step="any" />
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;">
+          <button id="place-order-btn" class="btn btn-long w-full btn-lg" onclick="placeOrder()">
+            Open Long
+          </button>
+        </div>
+
+        <p class="text-xs text-center" style="color:var(--text-muted);margin-top:0.85rem;">
+          Available: <span id="trade-available">0.00</span> USDT · Margin will be locked
+        </p>
+      </div>
+    </div>
+
+    <!-- ========== POSITIONS PAGE ========== -->
+    <div id="page-positions" class="page">
+      <div class="flex justify-between items-center" style="margin-bottom:1rem;">
+        <div class="font-semibold text-lg">Open Positions</div>
+        <span class="badge badge-blue" id="pos-count">0</span>
+      </div>
+
+      <div id="positions-list">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- ========== WALLET PAGE ========== -->
+    <div id="page-wallet" class="page">
+      <div class="card text-center" style="margin-bottom:1.1rem;">
+        <div class="text-sm" style="color:var(--text-muted);">Account Balance</div>
+        <div class="text-3xl font-bold" style="margin:0.5rem 0;">
+          <span id="wallet-balance">0.00</span> <span class="text-lg" style="color:var(--text-muted);">USDT</span>
+        </div>
+        <div class="text-sm" style="color:var(--text-muted);">
+          In positions: <span id="wallet-locked">0.00</span> USDT
+        </div>
+      </div>
+
+      <!-- Withdrawal Portal -->
+      <div class="card" style="margin-bottom:1.1rem;">
+        <div class="flex justify-between items-center" style="margin-bottom:0.85rem;">
+          <div class="font-semibold">Withdraw USDT</div>
+          <span class="badge badge-yellow">BEP20</span>
+        </div>
+
+        <div id="withdraw-eligibility" class="text-sm" style="margin-bottom:0.9rem;padding:0.7rem;border-radius:8px;background:var(--bg-elevated);border:1px solid var(--border);">
+          <!-- filled by JS: days left or eligible -->
+        </div>
+
+        <form id="withdraw-form">
+          <div class="input-group">
+            <label>Amount (USDT)</label>
+            <input type="number" id="withdraw-amount" class="input" placeholder="Min. 20 USDT" step="0.01" min="20" required />
+          </div>
+          <div class="input-group">
+            <label>Network</label>
+            <input type="text" class="input" value="BEP20 (BSC)" disabled style="opacity:0.85;cursor:not-allowed;" />
+          </div>
+          <div class="input-group">
+            <label>BEP20 Wallet Address</label>
+            <input type="text" id="withdraw-address" class="input" placeholder="0x..." required />
+          </div>
+          <button type="submit" id="withdraw-btn" class="btn btn-primary w-full">
+            Request Withdrawal
+          </button>
+          <p class="text-xs text-center" style="color:var(--text-muted);margin-top:0.75rem;">
+            Min. 20 USDT · BEP20 only · Trade for at least 7 days before withdrawing
+          </p>
+        </form>
+      </div>
+
+      <div class="card" style="margin-bottom:1.1rem;">
+        <div class="text-sm font-semibold" style="margin-bottom:0.5rem;">Your Platform Address</div>
+        <div class="address-box">
+          <span id="wallet-address">0x...</span>
+          <button class="copy-btn" onclick="copyAddress()" title="Copy">📋</button>
+        </div>
+        <p class="text-xs" style="color:var(--text-muted);margin-top:0.6rem;">
+          Demo address for identification. Funds are simulated.
+        </p>
+      </div>
+
+      <div class="card" style="margin-bottom:1.1rem;">
+        <div class="font-semibold" style="margin-bottom:0.75rem;">Withdrawal History</div>
+        <div id="withdraw-history">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="font-semibold" style="margin-bottom:0.75rem;">Recent Activity</div>
+        <div id="wallet-history">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROFILE PAGE ========== -->
+    <div id="page-profile" class="page">
+      <div class="card" style="margin-bottom:1.1rem;">
+        <div class="flex items-center gap-3" style="margin-bottom:1.1rem;">
+          <div class="user-avatar" style="width:52px;height:52px;font-size:1.35rem;" id="profile-avatar-big">A</div>
+          <div>
+            <div class="text-xl font-bold" id="profile-name">User</div>
+            <div class="text-sm" style="color:var(--text-muted);" id="profile-email">email@example.com</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.9rem;">
+          <div class="text-xs" style="color:var(--text-muted);">Wallet Address</div>
+          <div class="address-box" style="margin-top:0.3rem;">
+            <span id="profile-wallet">0x...</span>
+            <button class="copy-btn" onclick="copyAddress()">📋</button>
+          </div>
+        </div>
+
+        <div class="flex justify-between" style="margin-bottom:0.5rem;">
+          <div class="text-xs" style="color:var(--text-muted);">Member Since</div>
+          <div class="font-semibold text-sm" id="profile-joined">—</div>
+        </div>
+        <div class="flex justify-between">
+          <div class="text-xs" style="color:var(--text-muted);">Total Trades</div>
+          <div class="font-semibold text-sm" id="profile-trades">0</div>
+        </div>
+      </div>
+
+      <button onclick="handleLogout()" class="btn btn-secondary w-full">
+        Logout
+      </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="home">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Home
+      </button>
+      <button class="nav-item" data-page="trade">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+        Trade
+      </button>
+      <button class="nav-item" data-page="positions">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+        Positions
+      </button>
+      <button class="nav-item" data-page="wallet">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        Wallet
+      </button>
+      <button class="nav-item" data-page="profile">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script src="js/telegram.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
