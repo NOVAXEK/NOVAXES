@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ergon – Community Mining Network</title>
+  <meta name="description" content="Ergon – Earn points, claim daily activity, transfer between wallets, and grow with the community." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ==================== AUTH SCREEN ==================== -->
+  <div id="auth-screen" class="auth-container">
+    <div class="auth-card">
+      <div class="logo">ERG</div>
+      <h1 class="text-2xl font-bold text-center" style="margin-bottom:0.25rem;">Ergon</h1>
+      <p class="text-sm text-center" style="color:var(--text-muted);margin-bottom:1.75rem;">
+        Official Community Points Platform
+      </p>
+
+      <!-- Tabs -->
+      <div class="flex gap-2" style="margin-bottom:1.5rem;">
+        <button id="tab-login" class="btn btn-primary flex-1">Login</button>
+        <button id="tab-register" class="btn btn-secondary flex-1">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="login-email" class="input" placeholder="you@example.com" required />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="login-password" class="input" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top:0.5rem;">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="hidden">
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" class="input" placeholder="Janet Brown" required />
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" class="input" placeholder="you@example.com" required />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" class="input" placeholder="Min. 6 chars: letters, numbers, symbols" required minlength="6" />
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top:0.5rem;">
+          Create Account 🚀
+        </button>
+        <p class="text-xs text-center" style="color:var(--text-muted);margin-top:1rem;">
+          By registering you agree to the Ergon Terms of Service.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== APP SCREEN ==================== -->
+  <div id="app-screen" class="app-container hidden">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="flex items-center gap-3">
+        <div id="header-avatar" class="user-avatar">J</div>
+        <div>
+          <div id="header-name" class="font-semibold">User</div>
+          <div class="text-xs" style="color:var(--text-muted);">Ergon</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="handleLogout()" class="btn btn-sm btn-secondary" title="Logout">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- ========== HOME PAGE ========== -->
+    <div id="page-home" class="page active">
+      <!-- Balance Card -->
+      <div class="balance-card" style="margin-bottom:1.25rem;">
+        <div class="flex justify-between items-center" style="margin-bottom:0.5rem;">
+          <span class="text-sm" style="opacity:0.9;">TOTAL BALANCE</span>
+          <span id="network-status"></span>
+        </div>
+        <div class="flex items-end gap-2">
+          <span id="home-balance" class="text-3xl font-bold">0.00</span>
+          <span class="text-sm" style="opacity:0.85;margin-bottom:0.3rem;">Ergon</span>
+        </div>
+        <div class="flex justify-between items-center" style="margin-top:1rem;">
+          <div class="text-sm" style="opacity:0.9;">
+            XP/s <strong id="home-xp">10.0</strong>
+          </div>
+          <div class="text-sm" style="opacity:0.9;" id="home-wallet-short">0x...</div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="flex justify-between items-center" style="margin-bottom:1rem;">
+          <div>
+            <div class="text-xs" style="color:var(--text-muted);">Network</div>
+            <div class="font-semibold">Mainnet ●</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs" style="color:var(--text-muted);">Total Supply</div>
+            <div class="font-semibold">25,000,000 Ergon</div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn btn-primary flex-1" onclick="switchPage('activity')">
+            ⚡ Start Activity
+          </button>
+          <button class="btn btn-secondary flex-1" onclick="switchPage('referrals')">
+            👥 Referrals
+          </button>
+        </div>
+      </div>
+
+      <!-- Social -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="font-semibold" style="margin-bottom:0.75rem;">Social Media</div>
+        <div class="flex gap-3">
+          <a href="#" class="btn btn-secondary btn-sm" style="flex:1;">Telegram</a>
+          <a href="#" class="btn btn-secondary btn-sm" style="flex:1;">X (Twitter)</a>
+          <a href="#" class="btn btn-secondary btn-sm" style="flex:1;">Chart</a>
+        </div>
+      </div>
+
+      <!-- Halving Milestones -->
+      <div class="card">
+        <div class="flex justify-between items-center" style="margin-bottom:0.5rem;">
+          <div class="font-semibold">💎 Halving Milestones</div>
+          <span class="badge badge-purple">Phase 1</span>
+        </div>
+        <div class="milestone-track">
+          <div class="milestone-dot current">0.25</div>
+          <div class="milestone-dot">0.125</div>
+          <div class="milestone-dot">0.0625</div>
+          <div class="milestone-dot">0.031</div>
+          <div class="milestone-dot">0.015</div>
+        </div>
+        <div class="flex justify-between text-xs" style="color:var(--text-muted);margin-top:0.5rem;">
+          <span>0–5M</span>
+          <span>5–15M</span>
+          <span>15–20M</span>
+          <span>20–22.5M</span>
+          <span>22.5M+</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ACTIVITY PAGE ========== -->
+    <div id="page-activity" class="page">
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="flex justify-between items-center" style="margin-bottom:1rem;">
+          <div>
+            <div class="text-xs" style="color:var(--text-muted);">Accumulated</div>
+            <div class="text-2xl font-bold" style="color:var(--primary);">
+              <span id="activity-balance">0.00</span>
+            </div>
+          </div>
+          <div class="badge badge-blue">XP/s <span id="activity-xp">10.0</span></div>
+        </div>
+
+        <div id="claim-timer-box" class="timer-box" style="margin-bottom:1rem;">
+          <div class="text-sm" style="color:var(--text-muted);margin-bottom:0.4rem;">
+            Next processing available in:
+          </div>
+          <div id="claim-timer" class="timer-digits">00:00:00</div>
+        </div>
+
+        <button id="claim-btn" class="btn btn-primary w-full btn-lg">
+          ⚡ Claim Activity (+0.5)
+        </button>
+
+        <p class="text-xs text-center" style="color:var(--text-muted);margin-top:1rem;">
+          Activity once every 24 hours to gain Ergon points!<br />
+          Each successful activity session gives you +0.5 points.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="flex justify-between items-center" style="margin-bottom:0.75rem;">
+          <div class="font-semibold">Activity History</div>
+          <button class="btn btn-sm btn-secondary">🚀 Boost</button>
+        </div>
+        <div id="activity-history">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== WALLET PAGE ========== -->
+    <div id="page-wallet" class="page">
+      <div class="card text-center" style="margin-bottom:1.25rem;">
+        <div class="text-sm" style="color:var(--text-muted);">Your Account Balance</div>
+        <div class="text-3xl font-bold" style="margin:0.5rem 0;">
+          <span id="wallet-balance">0.00</span> <span class="text-lg">Ergon</span>
+        </div>
+
+        <div class="qr-box" style="margin:1.25rem auto;">
+          <div style="font-size:3rem;opacity:0.3;">⬛</div>
+          <div class="qr-center">Ergon</div>
+        </div>
+        <p class="text-xs" style="color:var(--success);margin-bottom:0.75rem;">Scan to receive points</p>
+
+        <div class="text-left">
+          <div class="text-sm font-semibold" style="margin-bottom:0.4rem;">Your Account Address</div>
+          <div class="address-box">
+            <span id="wallet-address">0x...</span>
+            <button class="copy-btn" onclick="copyAddress()" title="Copy">📋</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Send Points -->
+      <div class="card">
+        <div class="font-semibold" style="margin-bottom:1rem;">Send Points</div>
+        <form id="send-form">
+          <div class="input-group">
+            <label>Recipient Wallet Address</label>
+            <input type="text" id="send-to" class="input" placeholder="0x..." required />
+          </div>
+          <div class="input-group">
+            <label>Amount (Ergon)</label>
+            <input type="number" id="send-amount" class="input" placeholder="0.5" step="0.00000001" min="0.00000001" required />
+          </div>
+          <button type="submit" class="btn btn-primary w-full">
+            🚀 SEND POINTS
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========== REFERRALS PAGE ========== -->
+    <div id="page-referrals" class="page">
+      <div class="card text-center" style="margin-bottom:1.25rem;">
+        <div class="text-4xl" style="margin-bottom:0.5rem;">👥</div>
+        <div class="text-2xl font-bold" id="ref-count">0</div>
+        <div class="text-sm" style="color:var(--text-muted);">Friends Invited</div>
+      </div>
+
+      <div class="card">
+        <div class="font-semibold" style="margin-bottom:0.75rem;">Your Referral Link</div>
+        <div class="address-box" style="margin-bottom:1rem;">
+          <span id="ref-link">https://novaxek.github.io/NOVAXES/?ref=...</span>
+          <button class="copy-btn" onclick="copyRefLink()">📋</button>
+        </div>
+        <p class="text-sm" style="color:var(--text-muted);">
+          Share your link. When friends register and claim activity you earn bonus points.
+        </p>
+      </div>
+    </div>
+
+    <!-- ========== PROFILE PAGE ========== -->
+    <div id="page-profile" class="page">
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="flex items-center gap-3" style="margin-bottom:1.25rem;">
+          <div class="user-avatar" style="width:56px;height:56px;font-size:1.5rem;" id="profile-avatar-big">B</div>
+          <div>
+            <div class="text-xl font-bold" id="profile-name">User</div>
+            <div class="text-sm" style="color:var(--text-muted);" id="profile-email">email@example.com</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <div class="text-xs" style="color:var(--text-muted);">Wallet Address</div>
+          <div class="address-box" style="margin-top:0.3rem;">
+            <span id="profile-wallet">0x...</span>
+            <button class="copy-btn" onclick="copyAddress()">📋</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xs" style="color:var(--text-muted);">Member Since</div>
+          <div class="font-semibold" id="profile-joined">—</div>
+        </div>
+      </div>
+
+      <button onclick="handleLogout()" class="btn btn-secondary w-full">
+        Logout
+      </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="home">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Home
+      </button>
+      <button class="nav-item" data-page="activity">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95 0 5.52 4.47 10 9.99 10 3.31 0 6.24-1.61 8-4.11l-2.6-1.53C16.17 17.98 14.21 19 12 19z"/></svg>
+        Activity
+      </button>
+      <button class="nav-item" data-page="wallet">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        Wallet
+      </button>
+      <button class="nav-item" data-page="referrals">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Referrals
+      </button>
+      <button class="nav-item" data-page="profile">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+
+  <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- App scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/telegram.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
